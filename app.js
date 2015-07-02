@@ -5,6 +5,10 @@ app.get('/', function (req, res) {
   res.send('Hello World!');
 });
 
+app.post('/', function (req, res) {
+  res.send('Hello World!');
+});
+
 var server = app.listen(process.env.PORT, function () {
 
   var host = server.address().address;
