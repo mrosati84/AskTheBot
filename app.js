@@ -19,7 +19,7 @@ app.post('/', function (req, res) {
   var chat_id = req.body.message.chat.id,
       qs = {};
 
-  if (req.body.text === '/start') {
+  if (req.body.message.text === '/start') {
       // bot just opened
       qs = {
           "keyboard": [ ["Yes", "No"] ],
@@ -42,7 +42,7 @@ app.post('/', function (req, res) {
   } else {
       qs = {
           chat_id: chat_id,
-          text: 'You said ' + req.body.text
+          text: 'You said ' + req.body.message.text
       };
 
       request({
