@@ -42,7 +42,7 @@ app.post('/', function (req, res) {
   } else {
       qs = {
           chat_id: chat_id,
-          text: 'You said ' + req.body.message.text,
+          text: 'You said: ' + req.body.message.text,
           reply_markup: JSON.stringify({"hide_keyboard": true})
       };
 
