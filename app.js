@@ -19,12 +19,12 @@ app.post('/', function (req, res) {
   var chat_id = req.body.message.chat.id,
       qs = {};
 
-  if (req.body.message.text === '/start') {
+  if (req.body.message.text === '/start' || req.body.message.text === '/vote') {
       // bot just opened
       qs = {
           reply_markup: JSON.stringify({ "keyboard": [ ["Yes", "No"] ] }),
           chat_id: chat_id,
-          text: "Welcome, " + req.body.message.chat.first_name
+          text: "Welcome, " + req.body.message.chat.first_name + ", please vote"
       };
 
       request({
@@ -42,7 +42,8 @@ app.post('/', function (req, res) {
   } else {
       qs = {
           chat_id: chat_id,
-          text: 'You said ' + req.body.message.text
+          text: 'You said ' + req.body.message.text,
+          reply_markup: JSON.stringify({"hide_keyboard": true})
       };
 
       request({
