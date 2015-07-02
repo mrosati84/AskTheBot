@@ -13,17 +13,18 @@ app.get('/', function (req, res) {
 });
 
 app.post('/', function (req, res) {
+
   console.log(JSON.stringify(req.body));
 
-  var chat_id = req.body.chat.id;
-  var qs = {};
+  var chat_id = req.body.message.chat.id,
+      qs = {};
 
   if (req.body.text === '/start') {
       // bot just opened
       qs = {
           "keyboard": [ ["Yes", "No"] ],
           chat_id: chat_id,
-          text: "Welcome, " + req.body.first_name
+          text: "Welcome, " + req.body.message.chat.first_name
       };
 
       request({
