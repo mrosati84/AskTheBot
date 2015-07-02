@@ -1,6 +1,9 @@
 var express = require('express'),
     bodyParser = require('body-parser'),
+    request = require('request'),
     app = express();
+
+var token = '112693445:AAFujpq05vZlb3ofCk2nNDCVlkyP7gAWxUA';
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -11,11 +14,44 @@ app.get('/', function (req, res) {
 
 app.post('/', function (req, res) {
   console.log(JSON.stringify(req.body));
-  res.send({
-      'ok': true,
-      'description': 'Help message',
-      'result': 'This is the help message content'
-  });
+
+  var chat_id = req.body.chat_id;
+
+  if (req.body.text === '/start') {
+      // bot just opened
+      var qs = {
+          "keyboard": [ ["Yes", "No"] ]
+      };
+
+      request({
+          url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+          method: 'POST',
+          chat_id: chat_id,
+          text: "Welcome, " + req.body.first_name,
+          qs: qs
+      }, function (err, response, body) {
+          if (err) { console.log(err); return; }
+
+          console.log('Got response ' + response.statusCode);
+          console.log(body);
+
+          res.send();
+      });
+  } else {
+      request({
+          url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+          method: 'POST',
+          chat_id: chat_id,
+          text: 'You said ' + req.body.text
+      }, function (err, response, body) {
+          if (err) { console.log(err); return; }
+
+          console.log('Got response ' + response.statusCode);
+          console.log(body);
+
+          res.send();
+      });
+  }
 });
 
 var server = app.listen(process.env.PORT, function () {
@@ -23,6 +59,5 @@ var server = app.listen(process.env.PORT, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log('Example app listening at http://%s:%s', host, port);
-
+  console.log('App listening at http://%s:%s', host, port);
 });
