@@ -22,7 +22,7 @@ app.post('/', function (req, res) {
   if (req.body.message.text === '/start') {
       // bot just opened
       qs = {
-          "keyboard": [ ["Yes", "No"] ],
+          reply_markup: { "keyboard": [ ["Yes", "No"] ] },
           chat_id: chat_id,
           text: "Welcome, " + req.body.message.chat.first_name
       };
