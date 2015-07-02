@@ -3,7 +3,7 @@ var express = require('express'),
     request = require('request'),
     app = express();
 
-var token = '112693445:AAFujpq05vZlb3ofCk2nNDCVlkyP7gAWxUA';
+var token = '113551160:AAHg1-N6Eqk-GYy1CiZc1Zfm4sj6pxK5QLI';
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
