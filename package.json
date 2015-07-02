@@ -4,6 +4,7 @@
   "description": "Telegram bot for real-time voting",
   "main": "app.js",
   "dependencies": {
+    "body-parser": "1.13.1",
     "express": "4.13.0"
   },
   "devDependencies": {},
