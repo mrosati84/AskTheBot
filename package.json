@@ -1,0 +1,12 @@
+{
+  "name": "instavotebot",
+  "version": "1.0.0",
+  "description": "Telegram bot for real-time voting",
+  "main": "app.js",
+  "dependencies": {
+    "express": "4.13.0"
+  },
+  "devDependencies": {},
+  "author": "",
+  "license": "ISC"
+}
