@@ -15,7 +15,7 @@ app.get('/', function (req, res) {
 app.post('/', function (req, res) {
   console.log(JSON.stringify(req.body));
 
-  var chat_id = req.body.chat_id;
+  var chat_id = req.body.chat.id;
   var qs = {};
 
   if (req.body.text === '/start') {
