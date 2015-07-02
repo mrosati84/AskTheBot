@@ -11,7 +11,11 @@ app.get('/', function (req, res) {
 
 app.post('/', function (req, res) {
   console.log(JSON.stringify(req.body));
-  res.send('Hello World!');
+  res.send({
+      'ok': true,
+      'description': 'Help message',
+      'result': 'This is the help message content'
+  });
 });
 
 var server = app.listen(process.env.PORT, function () {
