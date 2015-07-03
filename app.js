@@ -57,6 +57,17 @@ app.post('/', function (req, res) {
         break;
 
         /**
+         * GET THE VOTES RESULTS
+         */
+        case '/results':
+        qs = {
+            reply_markup: JSON.stringify({"hide_keyboard": true}),
+            chat_id: chat_id,
+            text: 'We have: ' + votes.yes + ' yes and ' + votes.no + ' no.'
+        };
+        break;
+
+        /**
          * VOTE YES
          */
         case 'yes':
