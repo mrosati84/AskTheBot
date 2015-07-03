@@ -13,21 +13,25 @@ var votes = {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// root API route. Nothing fancy, just to show something to the user
 app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 
+// get and display all the votes for the running poll
 app.get('/votes', function (req, res) {
     res.send('We have: ' + votes.yes + ' yes and ' + votes.no + ' no.');
 });
 
+// main application route, POST request.
+// action is decided upon the value of req.body.message.text
 app.post('/', function (req, res) {
 
     console.log(JSON.stringify(req.body));
 
-    var chat_id = req.body.message.chat.id,
-        text = req.body.message.text.toLowerCase(),
-        qs = {};
+    var chat_id = req.body.message.chat.id, // telegram chat ID
+        text = req.body.message.text.toLowerCase(), // the text the user has written
+        qs = {}; // object containing the query string that will be serialized
 
     switch(text) {
         /**
@@ -105,6 +109,7 @@ app.post('/', function (req, res) {
         break;
     }
 
+    // sent the response message (telegram message)
     request({
         url: 'https://api.telegram.org/bot' + token + '/sendMessage',
         method: 'POST',
@@ -119,6 +124,7 @@ app.post('/', function (req, res) {
     });
 });
 
+// start express server
 var server = app.listen(process.env.PORT, function () {
     var host = server.address().address;
     var port = server.address().port;
