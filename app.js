@@ -29,7 +29,11 @@ app.post('/', function (req, res) {
         text = req.body.message.text.toLowerCase(),
         qs = {};
 
-    if (text == '/reset') {
+    switch(text) {
+        /**
+         * RESET ALL VOTES
+         */
+        case '/reset':
         votes.yes = 0;
         votes.no = 0;
 
@@ -38,67 +42,70 @@ app.post('/', function (req, res) {
             text: 'Votes reset!',
             reply_markup: JSON.stringify({"hide_keyboard": true})
         };
+        break;
 
-        request({
-            url: 'https://api.telegram.org/bot' + token + '/sendMessage',
-            method: 'POST',
-            qs: qs
-        }, function (err, response, body) {
-            if (err) { console.log(err); return; }
-
-            console.log('Got response ' + response.statusCode);
-            console.log(body);
-
-            res.send();
-        });
-    }
-
-    if (text === '/start' || text === '/vote') {
-        // bot just opened
+        /**
+         * START THE BOT OR START VOTING
+         */
+        case '/start':
+        case '/vote':
         qs = {
             reply_markup: JSON.stringify({ "keyboard": [ ["Yes", "No"] ] }),
             chat_id: chat_id,
             text: "Welcome, " + req.body.message.chat.first_name + ", please vote"
         };
+        break;
 
-        request({
-            url: 'https://api.telegram.org/bot' + token + '/sendMessage',
-            method: 'POST',
-            qs: qs
-        }, function (err, response, body) {
-            if (err) { console.log(err); return; }
-
-            console.log('Got response ' + response.statusCode);
-            console.log(body);
-
-            res.send();
-        });
-    }
-
-    if (text == 'yes' || text == 'no') {
+        /**
+         * VOTE YES
+         */
+        case 'yes':
         qs = {
             chat_id: chat_id,
             text: 'You said: ' + text,
             reply_markup: JSON.stringify({"hide_keyboard": true})
         };
 
-        votes[text]++;
+        votes.yes++;
+        break;
 
-        request({
-            url: 'https://api.telegram.org/bot' + token + '/sendMessage',
-            method: 'POST',
-            qs: qs
-        }, function (err, response, body) {
-            if (err) { console.log(err); return; }
+        /**
+         * VOTE NO
+         */
+        case 'no':
+        qs = {
+            chat_id: chat_id,
+            text: 'You said: ' + text,
+            reply_markup: JSON.stringify({"hide_keyboard": true})
+        };
 
-            console.log('Got response ' + response.statusCode);
-            console.log(body);
+        votes.no++;
+        break;
 
-            res.send();
-        });
+        /**
+         * UNRECOGNIZED COMMAND
+         */
+        default:
+        qs = {
+            chat_id: chat_id,
+            text: 'Say what?',
+            reply_markup: JSON.stringify({"hide_keyboard": true})
+        };
+        break;
     }
 
-    res.send();
+    request({
+        url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+        method: 'POST',
+        qs: qs
+    }, function (err, response, body) {
+        if (err) { console.log(err); return; }
+
+        console.log('Got response ' + response.statusCode);
+        console.log(body);
+
+        res.send();
+    });
 });
 
 var server = app.listen(process.env.PORT, function () {
