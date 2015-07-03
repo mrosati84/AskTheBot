@@ -14,95 +14,94 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
-  res.send('Hello World!');
+    res.send('Hello World!');
 });
 
 app.get('/votes', function (req, res) {
-  res.send('We have: ' + votes.yes + ' yes and ' + votes.no + ' no.');
+    res.send('We have: ' + votes.yes + ' yes and ' + votes.no + ' no.');
 });
 
 app.post('/', function (req, res) {
 
-  console.log(JSON.stringify(req.body));
+    console.log(JSON.stringify(req.body));
 
-  var chat_id = req.body.message.chat.id,
-      text = req.body.message.text.toLowerCase(),
-      qs = {};
+    var chat_id = req.body.message.chat.id,
+        text = req.body.message.text.toLowerCase(),
+        qs = {};
 
-  if (text == '/reset') {
-      votes.yes = 0;
-      votes.no = 0;
+    if (text == '/reset') {
+        votes.yes = 0;
+        votes.no = 0;
 
-      qs = {
-          chat_id: chat_id,
-          text: 'Votes reset!',
-          reply_markup: JSON.stringify({"hide_keyboard": true})
-      };
+        qs = {
+            chat_id: chat_id,
+            text: 'Votes reset!',
+            reply_markup: JSON.stringify({"hide_keyboard": true})
+        };
 
-      request({
-          url: 'https://api.telegram.org/bot' + token + '/sendMessage',
-          method: 'POST',
-          qs: qs
-      }, function (err, response, body) {
-          if (err) { console.log(err); return; }
+        request({
+            url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+            method: 'POST',
+            qs: qs
+        }, function (err, response, body) {
+            if (err) { console.log(err); return; }
 
-          console.log('Got response ' + response.statusCode);
-          console.log(body);
+            console.log('Got response ' + response.statusCode);
+            console.log(body);
 
-          res.send();
-      });
-  }
+            res.send();
+        });
+    }
 
-  if (text === '/start' || text === '/vote') {
-      // bot just opened
-      qs = {
-          reply_markup: JSON.stringify({ "keyboard": [ ["Yes", "No"] ] }),
-          chat_id: chat_id,
-          text: "Welcome, " + req.body.message.chat.first_name + ", please vote"
-      };
+    if (text === '/start' || text === '/vote') {
+        // bot just opened
+        qs = {
+            reply_markup: JSON.stringify({ "keyboard": [ ["Yes", "No"] ] }),
+            chat_id: chat_id,
+            text: "Welcome, " + req.body.message.chat.first_name + ", please vote"
+        };
 
-      request({
-          url: 'https://api.telegram.org/bot' + token + '/sendMessage',
-          method: 'POST',
-          qs: qs
-      }, function (err, response, body) {
-          if (err) { console.log(err); return; }
+        request({
+            url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+            method: 'POST',
+            qs: qs
+        }, function (err, response, body) {
+            if (err) { console.log(err); return; }
 
-          console.log('Got response ' + response.statusCode);
-          console.log(body);
+            console.log('Got response ' + response.statusCode);
+            console.log(body);
 
-          res.send();
-      });
-  }
+            res.send();
+        });
+    }
 
-  if (text == 'yes' || text == 'no') {
-      qs = {
-          chat_id: chat_id,
-          text: 'You said: ' + text,
-          reply_markup: JSON.stringify({"hide_keyboard": true})
-      };
+    if (text == 'yes' || text == 'no') {
+        qs = {
+            chat_id: chat_id,
+            text: 'You said: ' + text,
+            reply_markup: JSON.stringify({"hide_keyboard": true})
+        };
 
-      votes[text]++;
+        votes[text]++;
 
-      request({
-          url: 'https://api.telegram.org/bot' + token + '/sendMessage',
-          method: 'POST',
-          qs: qs
-      }, function (err, response, body) {
-          if (err) { console.log(err); return; }
+        request({
+            url: 'https://api.telegram.org/bot' + token + '/sendMessage',
+            method: 'POST',
+            qs: qs
+        }, function (err, response, body) {
+            if (err) { console.log(err); return; }
 
-          console.log('Got response ' + response.statusCode);
-          console.log(body);
+            console.log('Got response ' + response.statusCode);
+            console.log(body);
 
-          res.send();
-      });
-  }
+            res.send();
+        });
+    }
 });
 
 var server = app.listen(process.env.PORT, function () {
+    var host = server.address().address;
+    var port = server.address().port;
 
-  var host = server.address().address;
-  var port = server.address().port;
-
-  console.log('App listening at http://%s:%s', host, port);
+    console.log('App listening at http://%s:%s', host, port);
 });
