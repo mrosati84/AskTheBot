@@ -3,7 +3,7 @@ var express = require('express'),
     request = require('request'),
     app = express();
 
-var token = '113551160:AAHg1-N6Eqk-GYy1CiZc1Zfm4sj6pxK5QLI';
+var token = process.env.TELEGRAM_TOKEN;
 
 var votes = {
     yes: 0,
