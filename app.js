@@ -97,6 +97,8 @@ app.post('/', function (req, res) {
             res.send();
         });
     }
+
+    res.send();
 });
 
 var server = app.listen(process.env.PORT, function () {
