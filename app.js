@@ -1,7 +1,32 @@
 var express = require('express'),
     bodyParser = require('body-parser'),
     request = require('request'),
-    app = express();
+    app = express(),
+    socket = require('socket.io');
+
+// load dotenv
+require('dotenv').load();
+
+// start express server
+var server = app.listen(process.env.PORT, function () {
+    var host = server.address().address;
+    var port = server.address().port;
+
+    console.log('App listening at http://%s:%s', host, port);
+});
+
+// bind websocket to server
+io = socket(server);
+
+// add some basic socket.io boilerplate
+io.on('connection', function (socket) {
+    console.log('socket connected');
+
+    socket.on('ping', function (data) {
+        console.log('received ping');
+        socket.emit('pong', { msg: 'pong!' });
+    });
+});
 
 var token = process.env.TELEGRAM_TOKEN;
 
@@ -12,6 +37,12 @@ var votes = {
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// set jade as view engine
+app.set('view engine', 'jade');
+
+// set public files folder
+app.use(express.static('public'));
 
 // root API route. Nothing fancy, just to show something to the user
 app.get('/', function (req, res) {
@@ -124,10 +155,10 @@ app.post('/', function (req, res) {
     });
 });
 
-// start express server
-var server = app.listen(process.env.PORT, function () {
-    var host = server.address().address;
-    var port = server.address().port;
+app.get('/manage', function (req, res) {
+    res.render('manage', { 'title': 'Hey', 'message': 'Hello!' });
+});
 
-    console.log('App listening at http://%s:%s', host, port);
+app.get('/board', function (req, res) {
+    res.send('board of questions');
 });
