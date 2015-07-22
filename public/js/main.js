@@ -27,6 +27,10 @@ $(function () {
             appendListItems(data.questions);
         });
 
+        socket.on('questions',function (data) {
+            appendListItem(data.question);
+        });
+
     });
 
     var $list = $('#qts');
@@ -56,12 +60,18 @@ $(function () {
         socket.emit('remove-live-question');
     });
 
+
+
     var appendListItems = function(items) {
-        $list.empty();
         $.each(items,function(i,el){
             var $li = $('<li data-id="'+ el._id +'">').html('<p>'+ el.question +'</p><div class="controls"><span class="live">Put live</span><span class="remove">Reject</span></div>');
             $list.prepend($li);
         });        
+    }
+
+    var appendListItem = function(item) {
+        var $li = $('<li data-id="'+ item._id +'">').html('<p>'+ item.question +'</p><div class="controls"><span class="live">Put live</span><span class="remove">Reject</span></div>');
+        $list.prepend($li);
     }
 
 
