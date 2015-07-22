@@ -10,13 +10,14 @@ $(function () {
              console.log('Received', data.msg);
         });
 
-
+        socket.on('new-question', function (data) {
+            // console.log('New question');
+            $('.question').text('CIAO').fadeIn(100);
+            // console.log(data.ciao);
+        });
 
     });
- socket.on('new-question', function (data) {
-            console.log('New question');
-            $('.question').text('CIAO').fadeIn(100);
-        });
+
     var $list = $('#qts');
     var $liveBox = $('#live-question');
 

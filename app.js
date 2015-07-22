@@ -25,9 +25,10 @@ io = socket(server);
 io.on('connection', function (socket) {
     console.log('socket connected');
     socket.emit('ping', { msg: 'ping!' });
+
     socket.on('put-live', function() {
         console.log('put live');
-        socket.emit('new-question')
+        socket.broadcast.emit('new-question',{ciao:'hello'})
     });
 });
 
