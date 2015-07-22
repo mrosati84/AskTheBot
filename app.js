@@ -25,10 +25,7 @@ io = socket(server);
 io.on('connection', function (socket) {
     console.log('socket connected');
 
-    socket.on('ping', function (data) {
-        console.log('received ping');
-        socket.emit('pong', { msg: 'pong!' });
-    });
+    socket.emit('ping', { msg: 'ping!' });
 });
 
 var token = process.env.TELEGRAM_TOKEN;

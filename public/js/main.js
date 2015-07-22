@@ -1,12 +1,14 @@
 (function () {
-    var host = location.host,
-        port = location.port;
+    var host = location.host;
 
-    var socket = io.connect('http://' + host + ':' + port);
+    var socket = io.connect('http://' + host);
 
-    socket.emit('ping', {});
+    socket.on('connect', function () {
+        console.log('socket connected');
 
-    socket.on('pong', function (data) {
-        console.log('Received', data.msg);
+        socket.on('ping', function (data) {
+            console.log('Received', data.msg);
+        });
     });
+
 }());
