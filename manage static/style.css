@@ -1,0 +1,155 @@
+html,body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    color: #444;
+    font-size: 15px;
+    line-height: 18px;
+}
+
+* {
+    box-sizing : border-box;
+}
+
+.wrapper {
+    margin: 0 auto;
+    max-width: 800px;
+    overflow: hidden;
+    position: relative;
+    min-height: 600px;
+}
+
+.wrapper .header {
+    height: 5%;
+    margin: 0;
+    text-align: center;
+    font-size: 20px;
+    line-height: 24px;
+    padding-top: 20px;
+    text-transform: uppercase;
+}
+
+.wrapper #qts {
+    height: 65%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-top: 5%;
+    overflow: scroll;
+}
+.wrapper #qts li {
+    padding: 20px;
+    position: relative;
+    padding-right: 250px;
+    border-top: 1px solid #ccc;
+}
+
+.wrapper #qts li:nth-child(odd) {
+    background: #f6f6f6;
+}
+
+.wrapper #qts li .controls {
+    position: absolute;
+    top: 50%;
+    height: 36px;
+    margin-top: -18px;
+    right: 20px;
+    /*display:none;*/
+}
+
+.wrapper #qts li.live {
+    background: rgba(35,173,24,.2);
+}
+
+
+.wrapper #qts li.sent {
+    text-decoration: line-through;
+}
+
+.wrapper #qts li.sent span.remove{
+    display: none;
+}
+
+
+.wrapper #qts li .controls span {
+    cursor:pointer;
+    display: inline-block;
+    margin-left: 10px;
+    background: #23ad18;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    line-height: 20px;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.wrapper #qts li .controls span.remove {
+    background: #da291c;
+}
+
+.wrapper #qts li .controls span.remove:hover {
+    background: #ab2117;
+}
+
+.wrapper #qts li.live .controls {
+    display: none !important;
+}
+
+.wrapper #qts li.live:after {
+    content: 'On Air';
+    position: absolute;
+    text-transform: uppercase;
+    color: red;
+    font-weight: bold;
+    display: inline-block;
+    padding: 3px;
+    border: 2px solid red;
+    right: 20px;
+    bottom: 20px;
+}
+
+.wrapper #live-question {
+    position: relative;
+    background: #41a039;
+    height: 25%;
+    color: #fff;
+    font-size: 20px;
+    line-height: 25px;
+    padding: 30px 45px;
+}
+
+.wrapper #live-question h2 {
+    text-transform: uppercase;
+    text-align: center;
+    margin-top:0;
+}
+
+.wrapper #live-question:before {
+    content: '';
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 100%;
+    z-index: 3;
+    height: 25px;
+    background: rgba(125,125,125,.5);
+}
+
+.wrapper #live-question .remove-live {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-weight: bold;
+    font-size: 40px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/*@media screen and (max-width: 1024px) {
+    .wrapper #qts li .controls {
+        display: block !important;
+    }
+}*/
