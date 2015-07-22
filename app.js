@@ -63,7 +63,6 @@ app.post('/', function (req, res) {
             switch(user_action) {
                 case '/start':
                     qs = {
-                        reply_markup: JSON.stringify({"hide_keyboard":true}),
                         chat_id: chat_id,
                         text: "MESSAGGIO DI BENVENUTO"
                     };
@@ -72,7 +71,6 @@ app.post('/', function (req, res) {
 
                 case '/dev':
                     qs = {
-                        reply_markup: JSON.stringify({"hide_keyboard":true}),
                         chat_id: chat_id,
                         text: "MESSAGGIO DEV SONO FIGHI E BELLI"
                     };
@@ -88,7 +86,6 @@ app.post('/', function (req, res) {
 
             } else {
                 qs = {
-                    reply_markup: JSON.stringify({"hide_keyboard":true}),
                     chat_id: chat_id,
                     text: "DOMANDA TROPPO CORTA"
                 };
