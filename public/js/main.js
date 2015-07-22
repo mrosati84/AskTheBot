@@ -27,7 +27,7 @@ $(function () {
             appendListItems(data.questions);
         });
 
-        socket.on('questions',function (data) {
+        socket.on('question',function (data) {
             appendListItem(data.question);
         });
 
@@ -66,7 +66,7 @@ $(function () {
         $.each(items,function(i,el){
             var $li = $('<li data-id="'+ el._id +'">').html('<p>'+ el.question +'</p><div class="controls"><span class="live">Put live</span><span class="remove">Reject</span></div>');
             $list.prepend($li);
-        });        
+        });
     }
 
     var appendListItem = function(item) {
