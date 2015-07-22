@@ -80,9 +80,15 @@ app.post('/', function (req, res) {
 
         } else {
 
-            if (user_action.length > 6){
+            if ((user_action.length > 6) && (helpers.countWords(user_action) > 2)) {
 
-                // REGISTRO DOMANDA E LA INVIO A /MANAGE
+                // Domanda corretta, la scrivo su /manage
+
+                qs = {
+                    chat_id: chat_id,
+                    text: "Question registered, thank you."
+                };
+                events.sendMessage(token, qs);
 
             } else {
                 qs = {
