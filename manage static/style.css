@@ -36,7 +36,7 @@ html,body {
     margin: 0;
     padding: 0;
     margin-top: 5%;
-    overflow: scroll;
+    overflow: auto;
 }
 .wrapper #qts li {
     padding: 20px;
@@ -148,8 +148,42 @@ html,body {
     cursor: pointer;
 }
 
-/*@media screen and (max-width: 1024px) {
-    .wrapper #qts li .controls {
-        display: block !important;
+@media screen and (max-width: 768px) {
+    .wrapper {
+        min-height: 0;
     }
-}*/
+
+    .wrapper .header {
+        font-size: 18px;
+        line-height: 20px;
+        padding-top: 10px;
+    }
+
+    .wrapper #qts li {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .wrapper #qts li .controls {
+        position: static;
+        height: auto;
+        text-align: center;
+        padding-top: 30px;
+    }
+
+    .wrapper #live-question {
+        font-size: 15px;
+        line-height: 17px;
+        padding: 20px;
+        overflow: auto;
+    }
+
+    .wrapper #live-question h2 {
+        display: none;
+    }
+    .wrapper #live-question .remove-live {
+        font-size: 20px;
+        top: 10px;
+        right: 10px;
+    }
+}
