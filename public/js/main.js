@@ -57,6 +57,7 @@ $(function () {
     });
 
     var appendListItems = function(items) {
+        $list.empty();
         $.each(items,function(i,el){
             var $li = $('<li data-id="'+ el._id +'">').html('<p>'+ el.question +'</p><div class="controls"><span class="live">Put live</span><span class="remove">Reject</span></div>');
             $list.prepend($li);
