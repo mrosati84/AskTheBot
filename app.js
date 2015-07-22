@@ -90,6 +90,17 @@ app.post('/', function (req, res) {
                 };
                 events.sendMessage(token, qs);
 
+                var questionsSoFar = helpers.getQuestions();
+
+                questionsSoFar.push({
+                    'id': helpers.getRandomHash(),
+                    'question': user_action,
+                    'first_name': req.body.message.from.first_name,
+                    'last_name': req.body.message.from.last_name
+                });
+
+                helpers.saveQuestions(questionsSoFar);
+
             } else {
                 qs = {
                     chat_id: chat_id,
