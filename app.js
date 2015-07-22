@@ -2,13 +2,27 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     request = require('request'),
     app = express(),
-    socket = require('socket.io');
+    socket = require('socket.io'),
+    assert = require('assert'),
+    MongoClient = require('mongodb').MongoClient;
 
 var helpers = require('./helpers'),
     events = require('./events');
 
 // load dotenv
 require('dotenv').load();
+
+var mongodb = undefined;
+
+// MongoDB set-up
+var mongoURL = 'mongodb://' + process.env.MONGO_USER + ':' + process.env.MONGO_PASSWORD + '@' + process.env.MONGO_HOST + ':' + process.env.MONGO_PORT + '/' + process.env.MONGO_DB;
+
+MongoClient.connect(mongoURL, function(err, db) {
+    if (err == null)
+        console.log('MongoDB connected');
+
+    mongodb = db;
+});
 
 // start express server
 var server = app.listen(process.env.PORT, function () {
@@ -24,9 +38,14 @@ io = socket(server);
 // add some basic socket.io boilerplate
 io.on('connection', function (socket) {
     console.log('socket connected');
-
     socket.emit('ping', { msg: 'ping!' });
+
+    socket.on('put-live', function() {
+        console.log('put live');
+        socket.broadcast.emit('new-question',{ciao:'hello'})
+    });
 });
+
 
 var token = process.env.TELEGRAM_TOKEN;
 
@@ -72,7 +91,7 @@ app.post('/', function (req, res) {
                 case '/dev':
                     qs = {
                         chat_id: chat_id,
-                        text: "The creators of this amazing Bot are Matteo, Luca and Nicholas."
+                        text: "The creators of this amazing Bot are Matteo, Luca and Nicholas. 😎😎😎"
                     };
                     events.sendMessage(token, qs);
                 break;
@@ -90,21 +109,23 @@ app.post('/', function (req, res) {
                 };
                 events.sendMessage(token, qs);
 
-                var questionsSoFar = helpers.getQuestions();
+                var collection = mongodb.collection(process.env.MONGO_COLLECTION);
 
-                questionsSoFar.push({
-                    'id': helpers.getRandomHash(),
+                collection.insert({
                     'question': user_action,
                     'first_name': req.body.message.from.first_name,
                     'last_name': req.body.message.from.last_name
+                }, function (err, result) {
+                    if (err != null) {
+                        console.error('Mongo connection error')
+                        process.exit();
+                    }
                 });
-
-                helpers.saveQuestions(questionsSoFar);
 
             } else {
                 qs = {
                     chat_id: chat_id,
-                    text: "DOMANDA TROPPO CORTA"
+                    text: "Your question is too short."
                 };
                 events.sendMessage(token, qs);
             }

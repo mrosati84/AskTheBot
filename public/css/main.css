@@ -28,10 +28,5 @@ body {
     line-height: 1.5;
     color: #fff;
     font-weight: 300;
-    opacity: 0;
-    transition: opacity 2s ease-in;
-}
-
-.wrapper-board .question.active{
-    opacity: 1;
+    display: none;
 }
