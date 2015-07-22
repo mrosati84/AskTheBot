@@ -52,65 +52,52 @@ app.get('/', function (req, res) {
 app.post('/', function (req, res) {
 
     var chat_id = req.body.message.chat.id,
-        user_action = req.body.message.text + " ",
+        user_action = req.body.message.text,
         qs = {}; // object containing the query string that will be serialized
 
-    switch (helpers.messageType(req)) {
-        case 'text':
+    if (helpers.messageType(req) === "text") {
 
-            if (helpers.isCommand(user_action)) {
+        if (helpers.isCommand(user_action)) {
 
-                var user_command = user_action.split(' ')[0],
-                    user_parameter = user_action.substring(user_command.length+1, user_action.length);
+            // Commands
+            switch(user_action) {
+                case '/start':
+                    qs = {
+                        reply_markup: JSON.stringify({"hide_keyboard":true}),
+                        chat_id: chat_id,
+                        text: "MESSAGGIO DI BENVENUTO"
+                    };
+                    events.sendMessage(token, qs);
+                break;
 
-                // Commands
-                switch(user_command) {
-                    case '/help':
-                    case '/start':
-                        qs = {
-                            reply_markup: JSON.stringify({"hide_keyboard":true}),
-                            chat_id: chat_id,
-                            text: "MESSAGGIO DI BENVENUTO"
-                        };
-                        events.sendMessage(token, qs);
-                    break;
+                case '/dev':
+                    qs = {
+                        reply_markup: JSON.stringify({"hide_keyboard":true}),
+                        chat_id: chat_id,
+                        text: "MESSAGGIO DEV SONO FIGHI E BELLI"
+                    };
+                    events.sendMessage(token, qs);
+                break;
+            };
 
-                    case '/dev':
-                        qs = {
-                            reply_markup: JSON.stringify({"hide_keyboard":true}),
-                            chat_id: chat_id,
-                            text: "MESSAGGIO DEV SONO FIGHI E BELLI"
-                        };
-                        events.sendMessage(token, qs);
-                    break;
+        } else {
 
+            if (user_action.length > 6){
 
-                    case '/send':
-                        if (!user_parameter){
-                            qs = {
-                                reply_markup: JSON.stringify({"hide_keyboard": true}),
-                                chat_id: chat_id,
-                                text: "Aggiungo la tua domanda dopo il comando '/send'"
-                            };
-                            events.sendMessage(token, qs);
-                        } else {
-                            // Il parametro viene inviato alla rotta /manage - in attesa di risposta
-                        }
-                    break;
+                // REGISTRO DOMANDA E LA INVIO A /MANAGE
 
-
-                    default:
-                        qs = {
-                            reply_markup: JSON.stringify({"hide_keyboard":true}),
-                            chat_id: chat_id,
-                            text: "Command not found, use /help for list of commands"
-                        };
-                        events.sendMessage(token, qs);
-                }
+            } else {
+                qs = {
+                    reply_markup: JSON.stringify({"hide_keyboard":true}),
+                    chat_id: chat_id,
+                    text: "DOMANDA TROPPO CORTA"
+                };
+                events.sendMessage(token, qs);
             }
-        break;
 
-    };
+        }
+
+    }
 
     res.send();
 
