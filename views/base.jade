@@ -1,0 +1,12 @@
+html
+  head
+    title!= title
+    meta(name='host', content=process.env.HOST)
+    meta(name='port', content=process.env.PORT)
+    link(href='/css/main.css', rel='stylesheet')
+    script(src='/socket.io/socket.io.js')
+    script(src='/js/jquery.min.js')
+    script(src='/js/main.js')
+
+  body
+    block content
