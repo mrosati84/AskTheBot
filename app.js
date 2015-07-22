@@ -17,11 +17,19 @@ var mongodb = undefined;
 // MongoDB set-up
 var mongoURL = 'mongodb://' + process.env.MONGO_USER + ':' + process.env.MONGO_PASSWORD + '@' + process.env.MONGO_HOST + ':' + process.env.MONGO_PORT + '/' + process.env.MONGO_DB;
 
+// get the telegram token
+var token = process.env.TELEGRAM_TOKEN;
+
+// MongoDb connection. All init stuff should be in this callback
 MongoClient.connect(mongoURL, function(err, db) {
     if (err == null)
         console.log('MongoDB connected');
 
+    // save a reference to mongodb
     mongodb = db;
+
+    // call the socket connection event
+    onSocketConnection();
 });
 
 // start express server
@@ -33,27 +41,33 @@ var server = app.listen(process.env.PORT, function () {
 });
 
 // bind websocket to server
-io = socket(server);
+var io = socket(server);
 
-// add some basic socket.io boilerplate
-io.on('connection', function (socket) {
-    console.log('socket connected');
-    socket.emit('ping', { msg: 'ping!' });
+var globalSocket = undefined;
 
-    socket.on('put-live', function(data) {
-        console.log('put live');
-        socket.broadcast.emit('new-question',{question:data.id})
+function onSocketConnection () {
+    io.on('connection', function (socket) {
+        globalSocket = socket;
+        var collection = mongodb.collection(process.env.MONGO_COLLECTION);
+
+        console.log('socket connected');
+        socket.emit('ping', { msg: 'ping!' });
+
+        socket.on('put-live', function(data) {
+            console.log('put live');
+            socket.broadcast.emit('new-question',{question:data.id})
+        });
+
+        collection.find({}).toArray(function (err, docs) {
+            socket.emit('questions', { questions: docs });
+        });
+
+        socket.on('remove-live-question', function(data) {
+            console.log('remove live question');
+            socket.broadcast.emit('clean-live-board');
+        });
     });
-
-
-    socket.on('remove-live-question', function(data) {
-        console.log('remove live question');
-        socket.broadcast.emit('clean-live-board');
-    });
-});
-
-
-var token = process.env.TELEGRAM_TOKEN;
+}
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -113,6 +127,7 @@ app.post('/', function (req, res) {
                     chat_id: chat_id,
                     text: "Question registered, thank you."
                 };
+
                 events.sendMessage(token, qs);
 
                 var collection = mongodb.collection(process.env.MONGO_COLLECTION);
@@ -127,6 +142,12 @@ app.post('/', function (req, res) {
                         process.exit();
                     }
                 });
+
+                globalSocket.emit('question', { question: {
+                    'question': user_action,
+                    'first_name': req.body.message.from.first_name,
+                    'last_name': req.body.message.from.last_name
+                }});
 
             } else {
                 qs = {
