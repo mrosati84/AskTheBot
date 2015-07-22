@@ -11,9 +11,12 @@ $(function () {
         });
 
         socket.on('new-question', function (data) {
-            // console.log('New question');
-            $('.question').text('CIAO').fadeIn(100);
-            // console.log(data.ciao);
+            console.log('new question');
+            $('.question').text(data.question).fadeIn(100);
+        });
+
+        socket.on('clean-live-board', function (data) {
+            $('.question').text('');
         });
 
     });
@@ -24,20 +27,22 @@ $(function () {
     $list.on('click','li span.live',function(e) {
         $list.find('li.live').addClass('sent');
         var $el = $(this).closest('li')
-                    .addClass('live')
-                    .siblings()
-                    .removeClass('live');
+                    .addClass('live');
+                    // .siblings()
+                    // .removeClass('live');
+
+        $el.siblings().removeClass('live');
         var id = $el.data('id');
         var text = $el.find('p').text();
         $liveBox.find('p').text(text);
-        socket.emit('put-live', { id : id });
+        socket.emit('put-live', { id : text });
     });
 
     $list.on('click','li span.remove',function(e) {
         var $el = $(this).closest('li');
         var id = $el.data('id');
         socket.emit('remove-question', { id : id });
-        $el.remove();
+        $el.fadeOut();
     });
 
     $('.remove-live').on('click',function(){

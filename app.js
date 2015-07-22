@@ -40,9 +40,15 @@ io.on('connection', function (socket) {
     console.log('socket connected');
     socket.emit('ping', { msg: 'ping!' });
 
-    socket.on('put-live', function() {
+    socket.on('put-live', function(data) {
         console.log('put live');
-        socket.broadcast.emit('new-question',{ciao:'hello'})
+        socket.broadcast.emit('new-question',{question:data.id})
+    });
+
+
+    socket.on('remove-live-question', function(data) {
+        console.log('remove live question');
+        socket.broadcast.emit('clean-live-board');
     });
 });
 
