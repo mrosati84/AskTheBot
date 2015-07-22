@@ -1,8 +1,15 @@
-var fs = require('fs');
+var fs = require('fs'),
+    crypto = require('crypto');
 
 outputFilename = './questions.json';
 
 module.exports = {
+
+    getRandomHash: function () {
+        var current_date = (new Date()).valueOf().toString();
+        var random = Math.random().toString();
+        return crypto.createHash('sha1').update(current_date + random).digest('hex');
+    },
 
     getQuestions: function () {
         return JSON.parse(fs.readFileSync(outputFilename, 'utf8'));

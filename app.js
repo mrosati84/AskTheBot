@@ -72,7 +72,7 @@ app.post('/', function (req, res) {
                 case '/dev':
                     qs = {
                         chat_id: chat_id,
-                        text: "The creators of this amazing bot are Matteo, Luca and Nicholas."
+                        text: "The creators of this amazing Bot are Matteo, Luca and Nicholas."
                     };
                     events.sendMessage(token, qs);
                 break;
@@ -89,6 +89,17 @@ app.post('/', function (req, res) {
                     text: "Question registered, thank you."
                 };
                 events.sendMessage(token, qs);
+
+                var questionsSoFar = helpers.getQuestions();
+
+                questionsSoFar.push({
+                    'id': helpers.getRandomHash(),
+                    'question': user_action,
+                    'first_name': req.body.message.from.first_name,
+                    'last_name': req.body.message.from.last_name
+                });
+
+                helpers.saveQuestions(questionsSoFar);
 
             } else {
                 qs = {
@@ -111,5 +122,5 @@ app.get('/manage', function (req, res) {
 });
 
 app.get('/board', function (req, res) {
-    res.send('board of questions');
+    res.render('board', { 'question': 'domanda' });
 });
