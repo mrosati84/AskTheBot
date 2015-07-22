@@ -10,6 +10,10 @@ $(function () {
              console.log('Received', data.msg);
         });
 
+        socket.on('questions', function (data) {
+            console.log(data.questions);
+        });
+
         socket.on('new-question', function (data) {
             console.log('new question');
             $('.question').text(data.question).fadeIn(100);

@@ -21,7 +21,11 @@ MongoClient.connect(mongoURL, function(err, db) {
     if (err == null)
         console.log('MongoDB connected');
 
+    // save a reference to mongodb
     mongodb = db;
+
+    // call the socket connection event
+    onSocketConnection();
 });
 
 // start express server
@@ -35,22 +39,28 @@ var server = app.listen(process.env.PORT, function () {
 // bind websocket to server
 io = socket(server);
 
-// add some basic socket.io boilerplate
-io.on('connection', function (socket) {
-    console.log('socket connected');
-    socket.emit('ping', { msg: 'ping!' });
+function onSocketConnection () {
+    io.on('connection', function (socket) {
+        var collection = mongodb.collection(process.env.MONGO_COLLECTION);
 
-    socket.on('put-live', function(data) {
-        console.log('put live');
-        socket.broadcast.emit('new-question',{question:data.id})
+        console.log('socket connected');
+        socket.emit('ping', { msg: 'ping!' });
+
+        socket.on('put-live', function(data) {
+            console.log('put live');
+            socket.broadcast.emit('new-question',{question:data.id})
+        });
+
+        collection.find({}).toArray(function (err, docs) {
+            socket.emit('questions', { questions: docs });
+        });
+
+        socket.on('remove-live-question', function(data) {
+            console.log('remove live question');
+            socket.broadcast.emit('clean-live-board');
+        });
     });
-
-
-    socket.on('remove-live-question', function(data) {
-        console.log('remove live question');
-        socket.broadcast.emit('clean-live-board');
-    });
-});
+}
 
 
 var token = process.env.TELEGRAM_TOKEN;
