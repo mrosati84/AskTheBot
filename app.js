@@ -37,7 +37,7 @@ var server = app.listen(process.env.PORT, function () {
 });
 
 // bind websocket to server
-io = socket(server);
+var io = socket(server);
 
 function onSocketConnection () {
     io.on('connection', function (socket) {
