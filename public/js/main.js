@@ -1,6 +1,6 @@
 (function () {
-    var host = $('meta[name="host"]').attr('content'),
-        port = $('meta[name="port"]').attr('content');
+    var host = location.host,
+        port = location.port;
 
     var socket = io.connect('http://' + host + ':' + port);
 
