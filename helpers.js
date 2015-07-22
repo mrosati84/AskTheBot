@@ -11,14 +11,6 @@ module.exports = {
         return crypto.createHash('sha1').update(current_date + random).digest('hex');
     },
 
-    getQuestions: function () {
-        return JSON.parse(fs.readFileSync(outputFilename, 'utf8'));
-    },
-
-    saveQuestions: function (data) {
-        fs.writeFileSync(outputFilename, JSON.stringify(data, null, 4));
-    },
-
     messageType: function(data) {
         if (data.body.message.text)
             return "text";
