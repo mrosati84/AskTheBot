@@ -5,7 +5,7 @@ var express = require('express'),
     socket = require('socket.io');
 
 var helpers = require('./helpers'),
-    events = require('./events/events');
+    events = require('./events');
 
 // load dotenv
 require('dotenv').load();
