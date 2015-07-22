@@ -1,6 +1,9 @@
 html
   head
     title!= title
+    meta(name='host', content=process.env.HOST)
+    meta(name='port', content=process.env.PORT)
+    meta(name='viewport', content='width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0')
     link(href='/css/main.css', rel='stylesheet')
     link(href='/css/manage.css', rel='stylesheet')
     script(src='/socket.io/socket.io.js')

@@ -64,7 +64,7 @@ app.post('/', function (req, res) {
                 case '/start':
                     qs = {
                         chat_id: chat_id,
-                        text: "MESSAGGIO DI BENVENUTO"
+                        text: "Welcome H-ARTIST " + req.body.message.chat.first_name + ",\nwant to ask anything to the speakers?\nWrite below your question."
                     };
                     events.sendMessage(token, qs);
                 break;
@@ -72,7 +72,7 @@ app.post('/', function (req, res) {
                 case '/dev':
                     qs = {
                         chat_id: chat_id,
-                        text: "MESSAGGIO DEV SONO FIGHI E BELLI"
+                        text: "The creators of this amazing bot are Matteo, Luca and Nicholas."
                     };
                     events.sendMessage(token, qs);
                 break;
