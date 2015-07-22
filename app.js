@@ -72,7 +72,7 @@ app.post('/', function (req, res) {
                 case '/dev':
                     qs = {
                         chat_id: chat_id,
-                        text: "The creators of this amazing Bot are Matteo, Luca and Nicholas."
+                        text: "The creators of this amazing Bot are Matteo, Luca and Nicholas. 😎😎😎"
                     };
                     events.sendMessage(token, qs);
                 break;
@@ -104,7 +104,7 @@ app.post('/', function (req, res) {
             } else {
                 qs = {
                     chat_id: chat_id,
-                    text: "DOMANDA TROPPO CORTA"
+                    text: "Your question is too short."
                 };
                 events.sendMessage(token, qs);
             }
