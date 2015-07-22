@@ -12,6 +12,10 @@ module.exports = {
             return true;
         else
             return false;
+    },
+
+    countWords: function(data) {
+        return data.split(" ").length;
     }
 
 }
