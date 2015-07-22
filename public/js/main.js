@@ -23,6 +23,10 @@ $(function () {
             $('.question').text('');
         });
 
+        socket.on('questions',function (data) {
+            appendListItems(data.questions);
+        });
+
     });
 
     var $list = $('#qts');
@@ -32,12 +36,9 @@ $(function () {
         $list.find('li.live').addClass('sent');
         var $el = $(this).closest('li')
                     .addClass('live');
-                    // .siblings()
-                    // .removeClass('live');
-
-        $el.siblings().removeClass('live');
         var id = $el.data('id');
         var text = $el.find('p').text();
+        $el.siblings().removeClass('live');
         $liveBox.find('p').text(text);
         socket.emit('put-live', { id : text });
     });
@@ -46,6 +47,7 @@ $(function () {
         var $el = $(this).closest('li');
         var id = $el.data('id');
         socket.emit('remove-question', { id : id });
+        console.log(id);
         $el.fadeOut();
     });
 
@@ -53,6 +55,13 @@ $(function () {
         $liveBox.find('p').text('...');
         socket.emit('remove-live-question');
     });
+
+    var appendListItems = function(items) {
+        $.each(items,function(i,el){
+            var $li = $('<li data-id="'+ el._id +'">').html('<p>'+ el.question +'</p><div class="controls"><span class="live">Put live</span><span class="remove">Reject</span></div>');
+            $list.prepend($li);
+        });        
+    }
 
 
 }());
