@@ -24,9 +24,13 @@ io = socket(server);
 // add some basic socket.io boilerplate
 io.on('connection', function (socket) {
     console.log('socket connected');
-
     socket.emit('ping', { msg: 'ping!' });
+    socket.on('put-live', function() {
+        console.log('put live');
+        socket.emit('new-question')
+    });
 });
+
 
 var token = process.env.TELEGRAM_TOKEN;
 

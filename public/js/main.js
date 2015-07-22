@@ -9,12 +9,18 @@ $(function () {
         socket.on('ping', function (data) {
              console.log('Received', data.msg);
         });
-    });
 
+
+
+    });
+ socket.on('new-question', function (data) {
+            console.log('New question');
+            $('.question').text('CIAO').fadeIn(100);
+        });
     var $list = $('#qts');
     var $liveBox = $('#live-question');
 
-    $list.on('click','li span.live',function(e) {            
+    $list.on('click','li span.live',function(e) {
         $list.find('li.live').addClass('sent');
         var $el = $(this).closest('li')
                     .addClass('live')
@@ -37,5 +43,6 @@ $(function () {
         $liveBox.find('p').text('...');
         socket.emit('remove-live-question');
     });
+
 
 }());
