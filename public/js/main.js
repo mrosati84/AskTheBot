@@ -29,6 +29,7 @@ $(function () {
 
         socket.on('current-question-text', function (data) {
             $liveBox.find('p').text(data.text);
+            $('.question').text(data.text).fadeIn(100);
         });
 
     });

@@ -95,6 +95,8 @@ function onSocketConnection () {
             io.sockets.emit('current-question-text', { text: currentQuestionText });
         });
 
+        io.sockets.emit('current-question-text', { text: currentQuestionText });
+
         socket.on('remove-question', function (data) {
             var id = new ObjectID(data.id);
 
