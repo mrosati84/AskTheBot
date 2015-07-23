@@ -4,7 +4,9 @@ var express = require('express'),
     app = express(),
     socket = require('socket.io'),
     assert = require('assert'),
-    MongoClient = require('mongodb').MongoClient;
+    mongo = require('mongodb'),
+    ObjectID = mongo.ObjectID,
+    MongoClient = mongo.MongoClient;
 
 var helpers = require('./helpers'),
     events = require('./events');
@@ -15,7 +17,9 @@ require('dotenv').load();
 var mongodb = undefined;
 
 // MongoDB set-up
-var mongoURL = 'mongodb://' + process.env.MONGO_USER + ':' + process.env.MONGO_PASSWORD + '@' + process.env.MONGO_HOST + ':' + process.env.MONGO_PORT + '/' + process.env.MONGO_DB;
+var mongoURL = 'mongodb://' + process.env.MONGO_USER + ':' +
+    process.env.MONGO_PASSWORD + '@' + process.env.MONGO_HOST + ':' +
+    process.env.MONGO_PORT + '/' + process.env.MONGO_DB;
 
 // get the telegram token
 var token = process.env.TELEGRAM_TOKEN;
@@ -58,13 +62,22 @@ function onSocketConnection () {
             socket.broadcast.emit('new-question',{question:data.id})
         });
 
-        collection.find({}).toArray(function (err, docs) {
+        collection.find({ rejected: false }).toArray(function (err, docs) {
             socket.emit('questions', { questions: docs });
         });
 
         socket.on('remove-live-question', function(data) {
             console.log('remove live question');
             socket.broadcast.emit('clean-live-board');
+        });
+
+        socket.on('remove-question', function (data) {
+            var id = new ObjectID(data.id);
+
+            collection.update({_id: id}, {$set: {rejected: true}}, function(err, result) {
+                if (err == null)
+                    console.log('Question with id ' + id + ' marked as rejected');
+            });
         });
     });
 }
@@ -95,7 +108,6 @@ app.post('/', function (req, res) {
         qs = {}; // object containing the query string that will be serialized
 
     if (helpers.messageType(req) === "text") {
-
         if (helpers.isCommand(user_action)) {
 
             // Commands
@@ -118,9 +130,7 @@ app.post('/', function (req, res) {
             };
 
         } else {
-
             if ((user_action.length > 6) && (helpers.countWords(user_action) > 2)) {
-
                 // Domanda corretta, la scrivo su /manage
 
                 qs = {
@@ -134,6 +144,7 @@ app.post('/', function (req, res) {
 
                 collection.insert({
                     'question': user_action,
+                    'rejected': false,
                     'first_name': req.body.message.from.first_name,
                     'last_name': req.body.message.from.last_name
                 }, function (err, result) {
@@ -156,9 +167,7 @@ app.post('/', function (req, res) {
                 };
                 events.sendMessage(token, qs);
             }
-
         }
-
     }
 
     res.send();
