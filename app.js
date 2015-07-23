@@ -11,6 +11,8 @@ var express = require('express'),
 var helpers = require('./helpers'),
     events = require('./events');
 
+var currentQuestionText = '';
+
 // load dotenv
 require('dotenv').load();
 
@@ -56,21 +58,26 @@ function onSocketConnection () {
 
         console.log('socket connected');
 
+        io.sockets.emit('current-question-text', { text: currentQuestionText });
+
         socket.on('put-live', function(data) {
-            var id = new ObjectID(data.id);
+            if (data.id)
+                var id = new ObjectID(data.id);
 
             console.log('put live');
             socket.broadcast.emit('new-question', { question: data.text });
 
-            collection.update({ _id: id }, {$set: { put_live: true }}, function (err, result) {
-                if (err == null) {
-                    console.log('Question with id ' + id + ' put live');
+            if (id) {
+                collection.update({ _id: id }, {$set: { put_live: true }}, function (err, result) {
+                    if (err == null) {
+                        console.log('Question with id ' + id + ' put live');
 
-                    collection.find({ rejected: false }).toArray(function (err, docs) {
-                        io.sockets.emit('questions', { questions: docs });
-                    });
-                }
-            });
+                        collection.find({ rejected: false }).toArray(function (err, docs) {
+                            io.sockets.emit('questions', { questions: docs });
+                        });
+                    }
+                });
+            }
         });
 
         collection.find({ rejected: false }).toArray(function (err, docs) {
@@ -80,6 +87,12 @@ function onSocketConnection () {
         socket.on('remove-live-question', function(data) {
             console.log('remove live question');
             socket.broadcast.emit('clean-live-board');
+        });
+
+        socket.on('set-current-question-text', function (data) {
+            currentQuestionText = data.text;
+
+            io.sockets.emit('current-question-text', { text: currentQuestionText });
         });
 
         socket.on('remove-question', function (data) {
@@ -190,7 +203,7 @@ app.post('/', function (req, res) {
 });
 
 app.get('/manage', function (req, res) {
-    res.render('manage', { 'title': 'Hey', 'message': 'Hello!' });
+    res.render('manage', { 'title': 'Manage questions' });
 });
 
 app.get('/board', function (req, res) {
