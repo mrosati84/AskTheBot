@@ -55,7 +55,7 @@ function onSocketConnection () {
         var collection = mongodb.collection(process.env.MONGO_COLLECTION);
 
         console.log('socket connected');
-        socket.emit('ping', { msg: 'ping!' });
+        // socket.emit('ping', { msg: 'ping!' });
 
         socket.on('put-live', function(data) {
             var id = new ObjectID(data.id);
@@ -70,7 +70,7 @@ function onSocketConnection () {
         });
 
         collection.find({ rejected: false }).toArray(function (err, docs) {
-            socket.emit('questions', { questions: docs });
+            socket.broadcast.emit('questions', { questions: docs });
         });
 
         socket.on('remove-live-question', function(data) {
@@ -162,7 +162,7 @@ app.post('/', function (req, res) {
                     }
                 });
 
-                globalSocket.emit('question', { question: {
+                globalSocket.broadcast.emit('question', { question: {
                     'question': user_action,
                     'first_name': req.body.message.from.first_name,
                     'last_name': req.body.message.from.last_name

@@ -6,9 +6,9 @@ $(function () {
 
         console.log('socket connected');
 
-        socket.on('ping', function (data) {
-             console.log('Received', data.msg);
-        });
+        // socket.on('ping', function (data) {
+        //      console.log('Received', data.msg);
+        // });
 
         socket.on('questions', function (data) {
             console.log(data.questions);
@@ -64,13 +64,15 @@ $(function () {
 
     var appendListItems = function(items) {
         $.each(items,function(i,el){
-            var $li = $('<li data-id="'+ el._id +'">').html('<p>'+ el.question +'</p><div class="controls"><span class="live">Put live</span><span class="remove">Reject</span></div>');
+            var className = item.put_live ? 'sent' : '';
+            var $li = $('<li class="'+ className +'" data-id="'+ el._id +'">').html('<p>'+ el.question +'</p><div class="controls"><span class="live">Put live</span><span class="remove">Reject</span></div>');
             $list.prepend($li);
         });
     }
 
     var appendListItem = function(item) {
-        var $li = $('<li data-id="'+ item._id +'">').html('<p>'+ item.question +'</p><div class="controls"><span class="live">Put live</span><span class="remove">Reject</span></div>');
+        var className = item.put_live ? 'sent' : '';
+        var $li = $('<li class="'+ className +'" data-id="'+ item._id +'">').html('<p>'+ item.question +'</p><div class="controls"><span class="live">Put live</span><span class="remove">Reject</span></div>');
         $list.prepend($li);
     }
 
