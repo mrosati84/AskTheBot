@@ -44,7 +44,7 @@ $(function () {
         var text = $el.find('p').text();
         $el.siblings().removeClass('live');
         $liveBox.find('p').text(text);
-        socket.emit('put-live', { id : text });
+        socket.emit('put-live', { id: id, text: text });
     });
 
     $list.on('click','li span.remove',function(e) {

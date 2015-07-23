@@ -58,8 +58,15 @@ function onSocketConnection () {
         socket.emit('ping', { msg: 'ping!' });
 
         socket.on('put-live', function(data) {
+            var id = new ObjectID(data.id);
+
             console.log('put live');
-            socket.broadcast.emit('new-question',{question:data.id})
+            socket.broadcast.emit('new-question', { question: data.text });
+
+            collection.update({ _id: id }, {$set: { put_live: true }}, function (err, result) {
+                if (err == null)
+                    console.log('Question with id ' + id + ' put live');
+            });
         });
 
         collection.find({ rejected: false }).toArray(function (err, docs) {
@@ -145,6 +152,7 @@ app.post('/', function (req, res) {
                 collection.insert({
                     'question': user_action,
                     'rejected': false,
+                    'put_live': false,
                     'first_name': req.body.message.from.first_name,
                     'last_name': req.body.message.from.last_name
                 }, function (err, result) {
