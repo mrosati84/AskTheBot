@@ -35,9 +35,12 @@ $(function () {
     });
 
     $('.actions button').on('click', function () {
-        $liveBox.find('p').text($(this).html());
-        socket.emit('set-current-question-text', { text: $(this).html() });
-        socket.emit('put-live', { text: $(this).html() });
+        var text = $(this).data('text');
+
+        $liveBox.find('p').text(text);
+
+        socket.emit('set-current-question-text', { text: text });
+        socket.emit('put-live', { text: text });
     });
 
     $list.on('click','li span.live',function(e) {
