@@ -11,7 +11,7 @@ var express = require('express'),
 var helpers = require('./helpers'),
     events = require('./events');
 
-var currentQuestionText = undefined;
+var currentQuestionText = '';
 
 // load dotenv
 require('dotenv').load();
@@ -57,6 +57,8 @@ function onSocketConnection () {
         var collection = mongodb.collection(process.env.MONGO_COLLECTION);
 
         console.log('socket connected');
+
+        io.sockets.emit('current-question-text', { text: currentQuestionText });
 
         socket.on('put-live', function(data) {
             var id = new ObjectID(data.id);
