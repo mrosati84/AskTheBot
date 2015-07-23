@@ -61,20 +61,23 @@ function onSocketConnection () {
         io.sockets.emit('current-question-text', { text: currentQuestionText });
 
         socket.on('put-live', function(data) {
-            var id = new ObjectID(data.id);
+            if (data.id)
+                var id = new ObjectID(data.id);
 
             console.log('put live');
             socket.broadcast.emit('new-question', { question: data.text });
 
-            collection.update({ _id: id }, {$set: { put_live: true }}, function (err, result) {
-                if (err == null) {
-                    console.log('Question with id ' + id + ' put live');
+            if (id) {
+                collection.update({ _id: id }, {$set: { put_live: true }}, function (err, result) {
+                    if (err == null) {
+                        console.log('Question with id ' + id + ' put live');
 
-                    collection.find({ rejected: false }).toArray(function (err, docs) {
-                        io.sockets.emit('questions', { questions: docs });
-                    });
-                }
-            });
+                        collection.find({ rejected: false }).toArray(function (err, docs) {
+                            io.sockets.emit('questions', { questions: docs });
+                        });
+                    }
+                });
+            }
         });
 
         collection.find({ rejected: false }).toArray(function (err, docs) {

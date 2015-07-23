@@ -30,3 +30,11 @@ body {
     font-weight: 300;
     display: none;
 }
+
+.actions {
+    text-align: center;
+}
+
+.actions button {
+    margin-left: 10px;
+}
