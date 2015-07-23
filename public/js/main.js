@@ -2,6 +2,9 @@ $(function () {
     var host = location.host;
     var socket = io.connect('http://' + host);
 
+    var $list = $('#qts');
+    var $liveBox = $('#live-question');
+
     socket.on('connect', function () {
 
         console.log('socket connected');
@@ -24,10 +27,11 @@ $(function () {
             appendListItem(data.question);
         });
 
-    });
+        socket.on('current-question-text', function (data) {
+            $liveBox.find('p').text(data.text);
+        });
 
-    var $list = $('#qts');
-    var $liveBox = $('#live-question');
+    });
 
     $list.on('click','li span.live',function(e) {
         $list.find('li.live').addClass('sent');
@@ -38,6 +42,7 @@ $(function () {
         $el.siblings().removeClass('live');
         $liveBox.find('p').text(text);
         socket.emit('put-live', { id: id, text: text });
+        socket.emit('set-current-question-text', { text: text });
     });
 
     $list.on('click','li span.remove',function(e) {

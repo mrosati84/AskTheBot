@@ -11,6 +11,8 @@ var express = require('express'),
 var helpers = require('./helpers'),
     events = require('./events');
 
+var currentQuestionText = undefined;
+
 // load dotenv
 require('dotenv').load();
 
@@ -80,6 +82,12 @@ function onSocketConnection () {
         socket.on('remove-live-question', function(data) {
             console.log('remove live question');
             socket.broadcast.emit('clean-live-board');
+        });
+
+        socket.on('set-current-question-text', function (data) {
+            currentQuestionText = data.text;
+
+            io.sockets.emit('current-question-text', { text: currentQuestionText });
         });
 
         socket.on('remove-question', function (data) {
@@ -190,7 +198,7 @@ app.post('/', function (req, res) {
 });
 
 app.get('/manage', function (req, res) {
-    res.render('manage', { 'title': 'Hey', 'message': 'Hello!' });
+    res.render('manage', { 'title': 'Manage questions' });
 });
 
 app.get('/board', function (req, res) {
