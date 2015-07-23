@@ -6,14 +6,6 @@ $(function () {
 
         console.log('socket connected');
 
-        // socket.on('ping', function (data) {
-        //      console.log('Received', data.msg);
-        // });
-
-        socket.on('questions', function (data) {
-            console.log(data.questions);
-        });
-
         socket.on('new-question', function (data) {
             console.log('new question');
             $('.question').text(data.question).fadeIn(100);
@@ -24,6 +16,7 @@ $(function () {
         });
 
         socket.on('questions',function (data) {
+            console.log(data.questions);
             appendListItems(data.questions);
         });
 
@@ -63,8 +56,10 @@ $(function () {
 
 
     var appendListItems = function(items) {
+        $list.empty();
+
         $.each(items,function(i,el){
-            var className = item.put_live ? 'sent' : '';
+            var className = el.put_live ? 'sent' : '';
             var $li = $('<li class="'+ className +'" data-id="'+ el._id +'">').html('<p>'+ el.question +'</p><div class="controls"><span class="live">Put live</span><span class="remove">Reject</span></div>');
             $list.prepend($li);
         });

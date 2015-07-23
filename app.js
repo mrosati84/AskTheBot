@@ -55,7 +55,6 @@ function onSocketConnection () {
         var collection = mongodb.collection(process.env.MONGO_COLLECTION);
 
         console.log('socket connected');
-        // socket.emit('ping', { msg: 'ping!' });
 
         socket.on('put-live', function(data) {
             var id = new ObjectID(data.id);
@@ -64,13 +63,18 @@ function onSocketConnection () {
             socket.broadcast.emit('new-question', { question: data.text });
 
             collection.update({ _id: id }, {$set: { put_live: true }}, function (err, result) {
-                if (err == null)
+                if (err == null) {
                     console.log('Question with id ' + id + ' put live');
+
+                    collection.find({ rejected: false }).toArray(function (err, docs) {
+                        io.sockets.emit('questions', { questions: docs });
+                    });
+                }
             });
         });
 
         collection.find({ rejected: false }).toArray(function (err, docs) {
-            socket.broadcast.emit('questions', { questions: docs });
+            io.sockets.emit('questions', { questions: docs });
         });
 
         socket.on('remove-live-question', function(data) {
@@ -82,8 +86,13 @@ function onSocketConnection () {
             var id = new ObjectID(data.id);
 
             collection.update({_id: id}, {$set: {rejected: true}}, function(err, result) {
-                if (err == null)
+                if (err == null) {
                     console.log('Question with id ' + id + ' marked as rejected');
+
+                    collection.find({ rejected: false }).toArray(function (err, docs) {
+                        io.sockets.emit('questions', { questions: docs });
+                    });
+                }
             });
         });
     });
@@ -160,13 +169,11 @@ app.post('/', function (req, res) {
                         console.error('Mongo connection error')
                         process.exit();
                     }
-                });
 
-                globalSocket.broadcast.emit('question', { question: {
-                    'question': user_action,
-                    'first_name': req.body.message.from.first_name,
-                    'last_name': req.body.message.from.last_name
-                }});
+                    collection.find({ rejected: false }).toArray(function (err, docs) {
+                        io.sockets.emit('questions', { questions: docs });
+                    });
+                });
 
             } else {
                 qs = {
