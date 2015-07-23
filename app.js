@@ -162,34 +162,41 @@ app.post('/', function (req, res) {
 
         } else {
             if ((user_action.length > 6) && (helpers.countWords(user_action) > 2)) {
-                // Domanda corretta, la scrivo su /manage
+                if (process.env.BOT_ACTIVE == 1) {
+                    // Domanda corretta, la scrivo su /manage
+                    qs = {
+                        chat_id: chat_id,
+                        text: "Question registered, thank you."
+                    };
 
-                qs = {
-                    chat_id: chat_id,
-                    text: "Question registered, thank you."
-                };
+                    events.sendMessage(token, qs);
 
-                events.sendMessage(token, qs);
+                    var collection = mongodb.collection(process.env.MONGO_COLLECTION);
 
-                var collection = mongodb.collection(process.env.MONGO_COLLECTION);
+                    collection.insert({
+                        'question': user_action,
+                        'rejected': false,
+                        'put_live': false,
+                        'first_name': req.body.message.from.first_name,
+                        'last_name': req.body.message.from.last_name
+                    }, function (err, result) {
+                        if (err != null) {
+                            console.error('Mongo connection error')
+                            process.exit();
+                        }
 
-                collection.insert({
-                    'question': user_action,
-                    'rejected': false,
-                    'put_live': false,
-                    'first_name': req.body.message.from.first_name,
-                    'last_name': req.body.message.from.last_name
-                }, function (err, result) {
-                    if (err != null) {
-                        console.error('Mongo connection error')
-                        process.exit();
-                    }
-
-                    collection.find({ rejected: false }).toArray(function (err, docs) {
-                        io.sockets.emit('questions', { questions: docs });
+                        collection.find({ rejected: false }).toArray(function (err, docs) {
+                            io.sockets.emit('questions', { questions: docs });
+                        });
                     });
-                });
-
+                } else {
+                    // bot is not active, do not save question
+                    qs = {
+                        chat_id: chat_id,
+                        text: "AskTheBot is not active! Good Bye ;)"
+                    };
+                    events.sendMessage(token, qs);
+                }
             } else {
                 qs = {
                     chat_id: chat_id,
