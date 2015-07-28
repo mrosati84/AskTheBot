@@ -1,3 +1,3 @@
 # AskTheBot
 
-AskTheBot is a Telegram Bot build with NodeJS, Jade, MondoDB.
+AskTheBot is a Telegram Bot built with NodeJS, Jade, MondoDB.
